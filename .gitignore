@@ -1,0 +1,8 @@
+.settings/
+.project
+.komodotools/
+*.komodoproject
+lib/
+tmp/
+*~
+
