@@ -1,0 +1,25 @@
+
+
+Java
+    Oracle JDK 1.7
+    from Oracle
+
+ant
+    version 1.8.2
+    from Ubuntu Software Center
+
+
+Google Closure tools
+
+    Compiler
+        version : exported
+        Built on: 2013.04.11 11:30
+        from goole.com/closure/compiler
+
+
+    Linter
+
+
+
+
+

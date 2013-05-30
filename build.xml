@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project name="helloant" default="hello" basedir=".">
+    <description>
+		simple example build file
+    </description>
+
+	<!-- set global properties for this build -->
+	<property name="src_dir" 	location="./src" />
+	<property name="out_dir" 	location="./gs" />
+	<property name="tmp_dir" 	location="./tmp" />
+	<property name="tool_path"	location="/usr/tools/closure-compiler" />
+
+	<target name="hello">
+		<echo message="hello ant!" />
+	</target>
+
+	<target name="lint" depends="clean" description="gjslint">
+		<mkdir dir="${tmp_dir}"/>
+		<exec executable="gjslint" failonerror="true" output="${tmp_dir}/lint_error">
+			<arg line="${src_dir}/*.js" />
+		</exec>
+	</target>
+
+	<target name="compile" depends="clean" description="closure copiler">
+		<mkdir dir="${tmp_dir}"/>
+		<mkdir dir="${out_dir}"/>
+
+		<java jar="${tool_path}/compiler.jar" fork="true" failonerror="true"
+			output="${out_dir}/ant-build-xml.gs" error="${tmp_dir}/compile_error">
+			<arg line="--warning_level VERBOSE" />
+			<arg prefix="--js" />
+			<arg file="${src_dir}/main.js" />
+			<arg file="${src_dir}/sub.js" />
+		</java>
+	</target>
+
+	<target name="clean" description="clean up temp files">
+		<!-- Create the time stamp -->
+		<tstamp/>
+
+		<!-- Delete the ${tmp_dir} and ${out_dir} directory trees -->
+		<delete dir="${tmp_dir}"/>
+		<delete file="${out_dir}/*"/>
+	</target>
+	
+</project>
