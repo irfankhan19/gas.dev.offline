@@ -42,5 +42,32 @@
 		<delete dir="${tmp_dir}"/>
 		<delete file="${out_dir}/*"/>
 	</target>
+
+
+
+  <taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask"
+           classpath="../build/compiler.jar"/>
+
+  <target name="comp">
+    
+    <jscomp compilationLevel="simple" warning="verbose" 
+            debug="false" output="${out_dir}/file.js">
+
+      <!-- externs dir="${basedir}/src" -->
+        <!-- file name="extern.js"/ -->
+      <!-- /externs -->
+
+      <sources dir="./src">
+        <file name="main.js"/>
+        <file name="sub.js"/>
+      </sources>
+
+      <!-- sources dir="${basedir}/other" -->
+        <!--file name="simple3.js"/ -->
+      <!-- /sources -->
+
+    </jscomp>
+	</target>
+
 	
 </project>
