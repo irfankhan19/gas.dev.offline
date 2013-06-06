@@ -36,7 +36,7 @@
 
 	<target name="jsdoc" description="jsdoc3">
 		<exec executable="jsdoc" failonerror="true" output="${tmp_dir}/jsdoc_error">
-			<arg line="${src_dir}" />
+			<arg line="${src_dir} -d docs" />
 		</exec>
 	</target>
 	
