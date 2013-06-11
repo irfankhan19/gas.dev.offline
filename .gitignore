@@ -2,9 +2,10 @@
 .project
 .komodotools/
 *.komodoproject
-jsdoc3/
-yuidoc/
 tmp/
 gs/
+jsdoc2/
+jsdoc3/
+yuidoc/
 *~
 
