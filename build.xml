@@ -36,10 +36,16 @@
 
 	<target name="jsdoc" description="jsdoc3">
 		<exec executable="jsdoc" failonerror="true" output="${tmp_dir}/jsdoc_error">
-			<arg line="${src_dir} -d docs" />
+			<arg line="${src_dir} -d jsdoc3" />
 		</exec>
 	</target>
 	
+	<target name="yuidoc" description="yuidoc">
+		<exec executable="yuidoc" failonerror="true" output="${tmp_dir}/yuidoc_error">
+			<arg line="${src_dir} -o yuidoc" />
+		</exec>
+	</target>
+
 	<target name="clean" description="clean up temp files">
 		<!-- Create the time stamp -->
 		<tstamp/>
