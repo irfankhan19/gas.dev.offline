@@ -2,7 +2,9 @@
 .project
 .komodotools/
 *.komodoproject
-lib/
+jsdoc3/
+yuidoc/
 tmp/
+gs/
 *~
 
