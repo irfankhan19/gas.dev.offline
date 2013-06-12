@@ -5,7 +5,7 @@
 
 /**
  * My Application namespace.
- * @namespace
+ * @namespace MyApp
  *
  */
 var MyApp = MyApp || {};
