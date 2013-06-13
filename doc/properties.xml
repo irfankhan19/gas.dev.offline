@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project>
+
+    <!-- プロジェクト -->
+    <property name="Name"   value="Example" />
+    <property name="name"   value="example" />
+    <property name="vendor" value="てんぷらメモ - at.terai@gmail.com" />
+
+    <!-- コンパイルオプション -->
+    <property name="compile.debug"    value="on" />
+    <property name="compile.optimize" value="on" />
+    <property name="compile.nowarn"   value="off" />
+    <property name="compile.source"   value="1.4" />
+    <property name="compile.encoding" value="UTF-8" />
+
+    <!-- ターゲットフォルダ -->
+    <property name="build.dir"  value="${basedir}/target" />
+    <property name="build.src"  value="${build.dir}/src" />
+    <property name="build.dest" value="${build.dir}/classes" />
+    <property name="build.docs" value="${build.dir}/apidocs" />
+
+</project>
