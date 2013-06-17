@@ -5,21 +5,16 @@
 	</description>
 
 	<!-- set global properties for this build -->
-	<property name="src_dir" 	location="./src" />
-	<property name="tmp_dir" 	location="./tmp" />
-	<property name="out_dir" 	location="./gs" />
-	<property name="yuidoc_dir" 	location="./yuidoc" />
-	<property name="jsdoc2_dir" 	location="./jsdoc2" />
-	<property name="jsdoc3_dir" 	location="./jsdoc3" />
-	<property name="tool_path"	location="/usr/local/closure-compiler" />
+	<property name="src_dir" 	location="${basedir}/src" />
+	<property name="tmp_dir" 	location="${basedir}/tmp" />
+	<property name="out_dir" 	location="${basedir}/out" />
+	<property name="yuidoc_dir" 	location="${basedir}/jsdoc/yuidoc" />
+	<property name="jsdoc2_dir" 	location="${basedir}/jsdoc/jsdoc2" />
+	<property name="jsdoc3_dir" 	location="${basedir}/jsdoc/jsdoc3" />
 
 	<taskdef name="jscomp"
 			 classname="com.google.javascript.jscomp.ant.CompileTask"
 			 classpath="/usr/local/closure-compiler/compiler.jar"  />
-
-	<target name="usage">
-		<echo message="ant -projecthelp" />
-	</target>
 
 	<target name="init" depends="clean" description="clean and create directories.">
 		<!-- Delete the ${tmp_dir} and ${out_dir} directory trees -->
@@ -37,32 +32,18 @@
 		</exec>
 	</target>
 
-	<target name="compile1" depends="init" description="closure copiler">
-		<delete dir="${out_dir}"/>
-		<mkdir  dir="${out_dir}"/>
-
-		<java jar="${tool_path}/compiler.jar" fork="true" failonerror="true"
-			output="${out_dir}/ant-build-xml.gs" error="${tmp_dir}/compile_error">
-			<arg line="--warning_level VERBOSE" />
-			<arg prefix="--js" />
-			<arg file="${src_dir}/main.js" />
-			<arg file="${src_dir}/sub.js" />
-		</java>
-	</target>
-
-
-	<target name="compile2" depends="init" description="closure copiler">
+	<target name="compile" depends="init" description="closure copiler">
 		<delete dir="${out_dir}"/>
 		<mkdir  dir="${out_dir}"/>
 
 		<jscomp compilationLevel="simple" warning="verbose"
-			debug="false" output="${out_dir}/file.js">
+			debug="false" output="${out_dir}/out.js">
 
 			<!-- externs dir="${basedir}/src">
 			<file name="extern.js"/>
 			</externs -->
 
-			<sources dir="${basedir}/src">
+			<sources dir="${src_dir}">
 				<file name="main.js"/>
 				<file name="sub.js"/>
 			</sources>
@@ -79,8 +60,8 @@
 		<delete dir="${jsdoc2_dir}"/>
 		<mkdir  dir="${jsdoc2_dir}"/>
 
-		<exec executable="jsdoc" failonerror="true" output="${tmp_dir}/jsdoc_error">
-			<arg line="${src_dir} -d ${jsdoc2_dir}" />
+		<exec executable="jsdoc" failonerror="true" output="${tmp_dir}/jsdoc2_error">
+			<arg line="${src_dir} -d=${jsdoc2_dir}" />
 		</exec>
 	</target>
 
@@ -88,7 +69,7 @@
 		<delete dir="${jsdoc3_dir}"/>
 		<mkdir  dir="${jsdoc3_dir}"/>
 
-		<exec executable="jsdoc" failonerror="true" output="${tmp_dir}/jsdoc_error">
+		<exec executable="jsdoc" failonerror="true" output="${tmp_dir}/jsdoc3_error">
 			<arg line="${src_dir} -d ${jsdoc3_dir}" />
 		</exec>
 	</target>
@@ -115,4 +96,8 @@
 		<delete dir="${yuidoc_dir}"/>
 	</target>
 
+
+	<target name="usage">
+		<echo message="ant -projecthelp" />
+	</target>
 </project>
