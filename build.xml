@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="helloant" default="hello" basedir=".">
-    <description>
+<project name="ant-template" default="usage" basedir=".">
+	<description>
 		simple example build file
-    </description>
+	</description>
 
 	<!-- set global properties for this build -->
 	<property name="src_dir" 	location="./src" />
@@ -13,11 +13,12 @@
 	<property name="jsdoc3_dir" 	location="./jsdoc3" />
 	<property name="tool_path"	location="/usr/local/closure-compiler" />
 
-  <taskdef name="jscomp" classname="com.google.javascript.jscomp.ant.CompileTask"
-           classpath="/usr/local/closure-compiler/compiler.jar"/>
-	
-	<target name="hello">
-		<echo message="hello ant!" />
+	<taskdef name="jscomp"
+			 classname="com.google.javascript.jscomp.ant.CompileTask"
+			 classpath="/usr/local/closure-compiler/compiler.jar"  />
+
+	<target name="usage">
+		<echo message="ant -projecthelp" />
 	</target>
 
 	<target name="init" depends="clean" description="clean and create directories.">
@@ -26,9 +27,9 @@
 		<mkdir  dir="${tmp_dir}"/>
 
 		<!-- Create the time stamp -->
-		<tstamp/>
+		<tstamp />
 	</target>
-	
+
 	<target name="lint" depends="init" description="gjslint">
 		<mkdir dir="${tmp_dir}"/>
 		<exec executable="gjslint" failonerror="true" output="${tmp_dir}/lint_error">
@@ -50,32 +51,30 @@
 	</target>
 
 
-  <target name="compile2" depends="init" description="closure copiler">
+	<target name="compile2" depends="init" description="closure copiler">
 		<delete dir="${out_dir}"/>
 		<mkdir  dir="${out_dir}"/>
-    
-    <jscomp compilationLevel="simple" warning="verbose" 
-            debug="false" output="${out_dir}/file.js">
 
-      <!-- externs dir="${basedir}/src">
-        <file name="extern.js"/>
-      </externs -->
+		<jscomp compilationLevel="simple" warning="verbose"
+			debug="false" output="${out_dir}/file.js">
 
-      <sources dir="${basedir}/src">
-        <file name="main.js"/>
-        <file name="sub.js"/>
-      </sources>
+			<!-- externs dir="${basedir}/src">
+			<file name="extern.js"/>
+			</externs -->
 
-      <!-- sources dir="${basedir}/other">
-        <file name="simple3.js"/>
-      </sources -->
+			<sources dir="${basedir}/src">
+				<file name="main.js"/>
+				<file name="sub.js"/>
+			</sources>
 
-    </jscomp>
-  
-	</target>
+			<!-- sources dir="${basedir}/other">
+			<file name="simple3.js"/>
+			</sources -->
+		</jscomp>
+    </target>
 
-	<!-- JsDoc commands -->
-	
+    <!-- JsDoc commands -->
+
 	<target name="jsdoc2" description="jsdoc-toolkit">
 		<delete dir="${jsdoc2_dir}"/>
 		<mkdir  dir="${jsdoc2_dir}"/>
@@ -84,7 +83,7 @@
 			<arg line="${src_dir} -d ${jsdoc2_dir}" />
 		</exec>
 	</target>
-	
+
 	<target name="jsdoc3" description="jsdoc3">
 		<delete dir="${jsdoc3_dir}"/>
 		<mkdir  dir="${jsdoc3_dir}"/>
@@ -93,7 +92,7 @@
 			<arg line="${src_dir} -d ${jsdoc3_dir}" />
 		</exec>
 	</target>
-	
+
 	<target name="yuidoc" description="yuidoc">
 		<delete dir="${yuidoc_dir}"/>
 		<mkdir  dir="${yuidoc_dir}"/>
@@ -103,9 +102,7 @@
 		</exec>
 	</target>
 
-	
 	<!-- clean up project -->
-
 	<target name="clean" description="clean up temp files">
 		<!-- Create the time stamp -->
 		<tstamp/>
@@ -117,5 +114,5 @@
 		<delete dir="${jsdoc3_dir}"/>
 		<delete dir="${yuidoc_dir}"/>
 	</target>
-	
+
 </project>

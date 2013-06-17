@@ -19,6 +19,7 @@ Google Closure tools
         version  - exported
         Built on - 2013.04.11 11:30
         from goole.com/closure/compiler
+        howtoinstall: https://bowerstudios.com/node/895
 
 
     Linter:
@@ -26,9 +27,18 @@ Google Closure tools
         easy_install:
 
 
+jsdoc-toolkit:
+    version - 
+    from: sudo apt-get install jsdoc-toolkit
+
 
 JSDoc3:
     version 3.2.0-dev
 
 
     node:
+
+
+YUIDOC:
+
+
