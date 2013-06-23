@@ -1,11 +1,4 @@
-.settings/
-.project
-.komodotools/
-*.komodoproject
-tmp/
-gs/
-jsdoc2/
-jsdoc3/
-yuidoc/
+.*/
+.*
 *~
-
+tmp/
