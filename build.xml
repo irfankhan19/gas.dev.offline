@@ -40,7 +40,7 @@
 			debug="false" output="${out_dir}/out.js">
 
 			<!-- externs dir="${basedir}/src">
-			<file name="extern.js"/>
+				<file name="extern.js"/>
 			</externs -->
 
 			<sources dir="${src_dir}">
@@ -49,7 +49,7 @@
 			</sources>
 
 			<!-- sources dir="${basedir}/other">
-			<file name="simple3.js"/>
+				<file name="simple3.js"/>
 			</sources -->
 		</jscomp>
     </target>

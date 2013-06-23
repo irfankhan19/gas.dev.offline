@@ -15,7 +15,7 @@
  *
  */
 var table = function(n, m, x, z) {
-    MyApp.subname = n + 'subSub';
+  MyApp.subname = n + 'subSub';
 
-    return {name: n + m + x + 'table'};
+  return {name: n + m + x + 'table'};
 };
