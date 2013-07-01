@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="ant-template" default="usage" basedir=".">
 	<description>
-		simple example build file
+		build.xml template for GAS
 	</description>
 
 	<!-- set global properties for this build -->
@@ -12,11 +12,32 @@
 	<property name="jsdoc2_dir" 	location="${basedir}/jsdoc/jsdoc2" />
 	<property name="jsdoc3_dir" 	location="${basedir}/jsdoc/jsdoc3" />
 
+
+	<fileset id="src" dir="${src_dir}">
+		<include name="main.js" />
+		<include name="sub.js" />
+	</fileset>
+
+	<fileset id="src2" dir="${src_dir}">
+		<include name="dashboard.js" />
+	</fileset>
+
+	<path id="sources">
+		<fileset refid="src" />
+		<fileset refid="src2" />
+	</path>
+
+
 	<taskdef name="jscomp"
 			 classname="com.google.javascript.jscomp.ant.CompileTask"
 			 classpath="/usr/local/closure-compiler/compiler.jar"  />
 
-	<target name="init" depends="clean" description="clean and create directories.">
+	<!-- property name="executable-full-path" location="../relative/path/to/executable"/ -->
+	<!-- exec executable="${executable-full-path}" / -->
+
+
+	<!-- init -->
+	<target name="init" depends="clean" description="Clean and create directories.">
 		<!-- Delete the ${tmp_dir} and ${out_dir} directory trees -->
 		<delete dir="${tmp_dir}"/>
 		<mkdir  dir="${tmp_dir}"/>
@@ -25,15 +46,20 @@
 		<tstamp />
 	</target>
 
-	<target name="lint" depends="init" description="gjslint">
+
+	<!-- Linter -->
+	<target name="lint" depends="init" description="Check code with gjslint">
 		<mkdir dir="${tmp_dir}"/>
+
 		<exec executable="gjslint" failonerror="true" output="${tmp_dir}/lint_error">
-			<arg line="${src_dir}/*.js" />
+			<arg pathref="sources" />
+			<!-- arg line="${src_dir}/*.js" / -->
 		</exec>
 	</target>
 
-	<target name="compile" depends="init" description="closure copiler">
-		<delete dir="${out_dir}"/>
+
+    <!-- Closure compiler -->
+	<target name="check" depends="init" description="Check code with closure copiler">
 		<mkdir  dir="${out_dir}"/>
 
 		<jscomp compilationLevel="simple" warning="verbose"
@@ -43,20 +69,34 @@
 				<file name="extern.js"/>
 			</externs -->
 
-			<sources dir="${src_dir}">
-				<file name="main.js"/>
-				<file name="sub.js"/>
-			</sources>
-
-			<!-- sources dir="${basedir}/other">
-				<file name="simple3.js"/>
-			</sources -->
+			<path refid="sources" />
 		</jscomp>
     </target>
 
-    <!-- JsDoc commands -->
 
-	<target name="jsdoc2" description="jsdoc-toolkit">
+    <!-- Compile for deploy-->
+	<target name="compile" depends="init" description="Compile with closure copiler">
+		<mkdir  dir="${out_dir}"/>
+
+		<jscomp compilationLevel="simple" warning="verbose"
+				debug="false" output="${out_dir}/out.js">
+			<path refid="sources" />
+		</jscomp>
+    </target>
+
+
+    <!-- Concat for debug -->
+	<target name="cat" depends="init" description="Concat files for GAS debug">
+		<mkdir  dir="${out_dir}"/>
+
+		<concat destfile="${out_dir}/out.debug.js">
+			<path refid="sources" />
+		</concat>
+	</target>
+
+
+    <!-- JsDoc commands -->
+	<target name="jsdoc2" description="JSDoc: jsdoc-toolkit">
 		<delete dir="${jsdoc2_dir}"/>
 		<mkdir  dir="${jsdoc2_dir}"/>
 
@@ -65,7 +105,8 @@
 		</exec>
 	</target>
 
-	<target name="jsdoc3" description="jsdoc3">
+
+	<target name="jsdoc3" description="JSDoc: jsdoc3">
 		<delete dir="${jsdoc3_dir}"/>
 		<mkdir  dir="${jsdoc3_dir}"/>
 
@@ -74,7 +115,8 @@
 		</exec>
 	</target>
 
-	<target name="yuidoc" description="yuidoc">
+
+	<target name="yuidoc" description="JSDoc: yuidoc">
 		<delete dir="${yuidoc_dir}"/>
 		<mkdir  dir="${yuidoc_dir}"/>
 
@@ -83,11 +125,9 @@
 		</exec>
 	</target>
 
-	<!-- clean up project -->
-	<target name="clean" description="clean up temp files">
-		<!-- Create the time stamp -->
-		<tstamp/>
 
+	<!-- clean up project -->
+	<target name="clean" description="Clean up temp files">
 		<!-- Delete the ${tmp_dir} and ${out_dir} directory trees -->
 		<delete dir="${tmp_dir}"/>
 		<delete dir="${out_dir}"/>
@@ -97,7 +137,12 @@
 	</target>
 
 
+	<!-- List targets -->
 	<target name="usage">
 		<echo message="ant -projecthelp" />
+		<echo message="" />
+		<exec executable="ant">
+			<arg line="-projecthelp" />
+		</exec>
 	</target>
 </project>
