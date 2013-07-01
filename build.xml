@@ -1,46 +1,69 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<project name="ant-template" default="usage" basedir=".">
-	<description>
-		build.xml template for GAS
-	</description>
+<project name="ant-template-for-GAS" default="usage" basedir=".">
+	<description>ant template for GAS</description>
+	<!--
+		build.xml template for Apache Ant to develop Google Apps Script.
+	-->
 
 	<!-- set global properties for this build -->
-	<property name="src_dir" 	location="${basedir}/src" />
-	<property name="tmp_dir" 	location="${basedir}/tmp" />
-	<property name="out_dir" 	location="${basedir}/out" />
-	<property name="yuidoc_dir" 	location="${basedir}/jsdoc/yuidoc" />
-	<property name="jsdoc2_dir" 	location="${basedir}/jsdoc/jsdoc2" />
-	<property name="jsdoc3_dir" 	location="${basedir}/jsdoc/jsdoc3" />
+	<property name="spec_dir"		location="${basedir}/spec" />
+	<property name="src_dir"			location="${basedir}/src" />
+	<property name="lib_dir"			location="${basedir}/lib" />
+	<property name="ext_dir"			location="${lib_dir}/ext" />
 
+	<property name="err_dir"			location="${basedir}/err" />
+	<property name="out_dir"			location="${basedir}/out" />
+	
+	<property name="yuidoc_dir"		location="${basedir}/jsdoc/yuidoc" />
+	<property name="jsdoc2_dir"		location="${basedir}/jsdoc/jsdoc2" />
+	<property name="jsdoc3_dir"		location="${basedir}/jsdoc/jsdoc3" />
+
+
+	<fileset id="spec" dir="${spec_dir}">
+		<include name="dashboard.js" />
+	</fileset>
 
 	<fileset id="src" dir="${src_dir}">
 		<include name="main.js" />
 		<include name="sub.js" />
 	</fileset>
 
-	<fileset id="src2" dir="${src_dir}">
-		<include name="dashboard.js" />
+	<fileset id="lib" dir="${lib_dir}">
+		<include name="lib.js" />
 	</fileset>
 
-	<path id="sources">
+	<fileset id="ext" dir="${lib_dir}">
+		<include name="ext.js" />
+	</fileset>
+
+	<path id="closure-compiler.sources">
 		<fileset refid="src" />
-		<fileset refid="src2" />
+		<fileset refid="spec" />
+	</path>
+
+	<path id="closure-compiler.externs">
+		<fileset refid="ext" />
+		<fileset refid="lib" />
+	</path>
+
+	<path id="closure-compiler.compress">
+		<fileset refid="src" />
+		<fileset refid="lib" />
 	</path>
 
 
+	<property name="closure-compiler.jar-path"	location="/usr/local/closure-compiler/compiler.jar" />
+
 	<taskdef name="jscomp"
 			 classname="com.google.javascript.jscomp.ant.CompileTask"
-			 classpath="/usr/local/closure-compiler/compiler.jar"  />
-
-	<!-- property name="executable-full-path" location="../relative/path/to/executable"/ -->
-	<!-- exec executable="${executable-full-path}" / -->
+			 classpath="${closure-compiler.jar-path}" />
 
 
 	<!-- init -->
 	<target name="init" depends="clean" description="Clean and create directories.">
-		<!-- Delete the ${tmp_dir} and ${out_dir} directory trees -->
-		<delete dir="${tmp_dir}"/>
-		<mkdir  dir="${tmp_dir}"/>
+		<!-- Delete the ${err_dir} and ${out_dir} directory trees -->
+		<delete dir="${err_dir}"/>
+		<mkdir  dir="${err_dir}"/>
 
 		<!-- Create the time stamp -->
 		<tstamp />
@@ -49,28 +72,37 @@
 
 	<!-- Linter -->
 	<target name="lint" depends="init" description="Check code with gjslint">
-		<mkdir dir="${tmp_dir}"/>
+		<mkdir dir="${err_dir}"/>
+		<pathconvert pathsep=" " property="lint.args" refid="sources"/>
 
-		<exec executable="gjslint" failonerror="true" output="${tmp_dir}/lint_error">
-			<arg pathref="sources" />
+		<exec executable="gjslint" failonerror="true" output="${err_dir}/lint_error">
+			<arg line="${lint.args}" />
 			<!-- arg line="${src_dir}/*.js" / -->
 		</exec>
 	</target>
 
 
-    <!-- Closure compiler -->
-	<target name="check" depends="init" description="Check code with closure copiler">
+	<!-- Audit -->
+	<target name="audit" depends="init" description="Runs source code auditing tools for JavaScript">
 		<mkdir  dir="${out_dir}"/>
+		<pathconvert pathsep=" " property="audit.sources" refid="closure-compiler.sources"/>
+		<pathconvert pathsep=" " property="audit.externs" refid="closure-compiler.externs"/>
 
-		<jscomp compilationLevel="simple" warning="verbose"
-			debug="false" output="${out_dir}/out.js">
+		<java jar="${closure-compiler.jar-path}"
+			output="${dev.null}"
+			error="${closure.dir}/closure-warnings.txt"
+			fork="true" >
 
-			<!-- externs dir="${basedir}/src">
-				<file name="extern.js"/>
-			</externs -->
-
-			<path refid="sources" />
-		</jscomp>
+			<arg value="--jscomp_warning=checkRegExp"/>
+			<arg value="--jscomp_off=checkTypes"/>
+			<arg value="--jscomp_off=nonStandardJsDocs"/>
+			<arg value="--jscomp_warning=internetExplorerChecks"/>
+			<arg value="--jscomp_warning=invalidCasts"/>
+			<arg value="--jscomp_off=externsValidation"/>
+			<arg value="--process_jquery_primitives"/>
+			<arg value="--js"/>
+			<arg line="${closure.args}"/>
+		</java>
     </target>
 
 
@@ -80,7 +112,7 @@
 
 		<jscomp compilationLevel="simple" warning="verbose"
 				debug="false" output="${out_dir}/out.js">
-			<path refid="sources" />
+			<path refid="closure-compiler.compress" />
 		</jscomp>
     </target>
 
@@ -90,7 +122,7 @@
 		<mkdir  dir="${out_dir}"/>
 
 		<concat destfile="${out_dir}/out.debug.js">
-			<path refid="sources" />
+			<path refid="closure-compiler.compress" />
 		</concat>
 	</target>
 
@@ -100,7 +132,7 @@
 		<delete dir="${jsdoc2_dir}"/>
 		<mkdir  dir="${jsdoc2_dir}"/>
 
-		<exec executable="jsdoc" failonerror="true" output="${tmp_dir}/jsdoc2_error">
+		<exec executable="jsdoc" failonerror="true" output="${err_dir}/jsdoc2_error">
 			<arg line="${src_dir} -d=${jsdoc2_dir}" />
 		</exec>
 	</target>
@@ -110,7 +142,7 @@
 		<delete dir="${jsdoc3_dir}"/>
 		<mkdir  dir="${jsdoc3_dir}"/>
 
-		<exec executable="jsdoc" failonerror="true" output="${tmp_dir}/jsdoc3_error">
+		<exec executable="jsdoc" failonerror="true" output="${err_dir}/jsdoc3_error">
 			<arg line="${src_dir} -d ${jsdoc3_dir}" />
 		</exec>
 	</target>
@@ -120,7 +152,7 @@
 		<delete dir="${yuidoc_dir}"/>
 		<mkdir  dir="${yuidoc_dir}"/>
 
-		<exec executable="yuidoc" failonerror="true" output="${tmp_dir}/yuidoc_error">
+		<exec executable="yuidoc" failonerror="true" output="${err_dir}/yuidoc_error">
 			<arg line="${src_dir} -o ${yuidoc_dir}" />
 		</exec>
 	</target>
@@ -128,8 +160,8 @@
 
 	<!-- clean up project -->
 	<target name="clean" description="Clean up temp files">
-		<!-- Delete the ${tmp_dir} and ${out_dir} directory trees -->
-		<delete dir="${tmp_dir}"/>
+		<!-- Delete the ${err_dir} and ${out_dir} directory trees -->
+		<delete dir="${err_dir}"/>
 		<delete dir="${out_dir}"/>
 		<delete dir="${jsdoc2_dir}"/>
 		<delete dir="${jsdoc3_dir}"/>
