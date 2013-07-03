@@ -8,102 +8,108 @@
 	-->
 
 	<!-- directories -->
-	<property name="spec_dir"		location="${basedir}/spec" />
-	<property name="src_dir"		location="${basedir}/src" />
-	<property name="lib_dir"		location="${basedir}/lib" />
-	<property name="ext_dir"		location="${lib_dir}/ext" />
+	<property name="spec_dir"		location="${basedir}/spec"/>
+	<property name="src_dir"		location="${basedir}/src"/>
+	<property name="lib_dir"		location="${basedir}/lib"/>
+	<property name="ext_dir"		location="${lib_dir}/ext"/>
 
-	<property name="err_dir"		location="${basedir}/err" />
-	<property name="out_dir"		location="${basedir}/out" />
+	<property name="err_dir"		location="${basedir}/err"/>
+	<property name="out_dir"		location="${basedir}/out"/>
 
-	<property name="yuidoc_dir"		location="${basedir}/jsdoc/yuidoc" />
-	<property name="jsdoc2_dir"		location="${basedir}/jsdoc/jsdoc2" />
-	<property name="jsdoc3_dir"		location="${basedir}/jsdoc/jsdoc3" />
+	<property name="jsdoc_dir"		location="${basedir}/jsdoc"/>
+	<property name="jsdoc2_dir"		location="${jsdoc_dir}/jsdoc2"/>
+	<property name="jsdoc3_dir"		location="${jsdoc_dir}/jsdoc3"/>
+	<property name="yuidoc_dir"		location="${jsdoc_dir}/yuidoc"/>
 
 
 	<!-- fileset -->
 	<fileset id="spec" dir="${spec_dir}">
-		<include name="spec.js" />
-		<include name="dashboard.js" />
+		<include name="spec.first.js"/>
+		<include name="main.spec.js"/>
+		<include name="sub.spec.js"/>
 	</fileset>
 
 	<fileset id="src" dir="${src_dir}">
-		<include name="main.js" />
-		<include name="sub.js" />
+		<include name="main.js"/>
+		<include name="sub.js"/>
 	</fileset>
 
 	<fileset id="lib" dir="${lib_dir}">
-		<include name="lib.js" />
+		<include name="lib.js"/>
 	</fileset>
 
 	<fileset id="ext" dir="${lib_dir}">
-		<include name="ext.js" />
+		<include name="ext.js"/>
 	</fileset>
 
 
-	<!-- path: fileset groups -->
+	<!-- path: group of fileset -->
 	<path id="out.audit.sources">
-		<fileset refid="spec" />
+		<fileset refid="src"/>
 	</path>
 
 	<path id="out.audit.externs">
-		<fileset refid="lib" />
-		<fileset refid="ext" />
+		<fileset refid="lib"/>
+		<fileset refid="ext"/>
 	</path>
 
 	<path id="out.compress.sources">
-		<fileset refid="src" />
-		<fileset refid="lib" />
+		<fileset refid="src"/>
+		<fileset refid="lib"/>
 	</path>
 
 	<path id="out.compress.externs">
-		<fileset refid="ext" />
+		<fileset refid="ext"/>
 	</path>
 
 
 	<path id="utest.audit.sources">
-		<fileset refid="spec" />
-		<fileset refid="src" />
+		<fileset refid="spec"/>
+		<fileset refid="src"/>
 	</path>
 
 	<path id="utest.audit.externs">
-		<fileset refid="lib" />
-		<fileset refid="ext" />
+		<fileset refid="lib"/>
+		<fileset refid="ext"/>
 	</path>
 
 	<path id="utest.compress.sources">
-		<fileset refid="spec" />
-		<fileset refid="src" />
-		<fileset refid="lib" />
+		<fileset refid="spec"/>
+		<fileset refid="src"/>
+		<fileset refid="lib"/>
 	</path>
 
 	<path id="utest.compress.externs">
-		<fileset refid="ext" />
+		<fileset refid="ext"/>
 	</path>
 
 
 	<!-- tools definitions -->
-	<property name="closure-compiler.jar-path"	location="/usr/local/closure-compiler/compiler.jar" />
+	<property name="closure-compiler.jar-path"	location="/usr/local/closure-compiler/compiler.jar"/>
 
 	<taskdef name="jscomp"
 			 classname="com.google.javascript.jscomp.ant.CompileTask"
-			 classpath="${closure-compiler.jar-path}" />
+			 classpath="${closure-compiler.jar-path}"/>
 
 
-	<!-- sub functions -->
+	<!-- Sub targets called by Main targets -->
 
 	<!-- lint
 		Input:
-			source files: property="lint.files"
+			source files: lint.sources
 		Output:
-			warnings:
+			warnings:     lint.warning
 	-->
 	<target name="lint">
 		<mkdir dir="${err_dir}"/>
 
-		<exec executable="gjslint" failonerror="true" output="${err_dir}/lint_warnings.txt">
-			<arg value="--linux_mode" />
-			<arg line="${lint.files}" />
+		<pathconvert property="lint.files" refid="${lint.sources}" pathsep=" "/>
+
+		<exec executable="gjslint" failonerror="true" output="${err_dir}/${lint.warning}">
+			<!-- arg value="" / -->
+			<!-- arg value="" / -->
+			<!-- arg value="" / -->
+			<arg line="${lint.files}"/>
 		</exec>
 	</target>
 
@@ -113,15 +119,19 @@
 			source files: property="audit.sources"
 			extern files: property="audit.externs"
 		Output:
-			output file:  /dev/null
-			warnings:
+			output file:  property="audit.outfile"
+			warnings:     property="audit.warning"
 	-->
 	<target name="audit">
 		<mkdir dir="${err_dir}"/>
+		<mkdir dir="${out_dir}"/>
+
+		<pathconvert property="audit.src.files" refid="${audit.sources}" pathsep=" "/>
+		<pathconvert property="audit.ext.files" refid="${audit.externs}" pathsep=" "/>
 
 		<java jar="${closure-compiler.jar-path}"
-			output="${dev.null}"
-			error="${err_dir}/closure-warnings.txt"
+			output="${out_dir}/${audit.outfile}"
+			error="${err_dir}/${audit.warning}"
 			fork="true" >
 
 			<arg value="--jscomp_warning=checkRegExp"/>
@@ -132,27 +142,11 @@
 			<arg value="--jscomp_off=externsValidation"/>
 			<arg value="--process_jquery_primitives"/>
 			<arg value="--js"/>
-			<arg line="${audit.sources}"/>
+			<arg line="${audit.src.files}"/>
 
 			<arg prefix="--externs "/>
-			<arg line="${audit.externs}"/>
+			<arg line="${audit.ext.files}"/>
 		</java>
-    </target>
-
-
-    <!-- Compress
-		Input:
-			source files: property="compress.files"
-		Output:
-			out file:     property="compress.out"
-	-->
-	<target name="compress">
-		<mkdir  dir="${out_dir}"/>
-
-		<jscomp compilationLevel="simple" warning="quiet"
-				debug="false" output="${out_dir}/${compress.out}">
-			<path refid="${compress.files}" />
-		</jscomp>
     </target>
 
 
@@ -165,18 +159,34 @@
 	<target name="concat">
 		<mkdir  dir="${out_dir}"/>
 
-		<concat destfile="${out_dir}/${concat.out}">
-			<path refid="${concat.files}" />
+		<concat destfile="${out_dir}/${concat.outfile}">
+			<path refid="${concat.sources}"/>
 		</concat>
 	</target>
 
 
+    <!-- Compress
+		Input:
+			source files: property="compress.sources"
+		Output:
+			out file:     property="compress.outfile"
+	-->
+	<target name="compress">
+		<mkdir  dir="${out_dir}"/>
+
+		<jscomp compilationLevel="simple" warning="quiet"
+				debug="false" output="${out_dir}/${compress.outfile}">
+			<path refid="${compress.sources}"/>
+		</jscomp>
+    </target>
+
+
+	<!-- Main targets -->
 
 	<!-- init -->
 	<target name="init" depends="clean" description="Clean and create directories.">
-		<!-- Delete the ${err_dir} and ${out_dir} directory trees -->
-		<delete dir="${err_dir}"/>
-		<mkdir  dir="${err_dir}"/>
+		<!-- Delete the ${err_dir} directory trees -->
+		<delete dir="${err_dir}/*"/>
 
 		<!-- Create the time stamp -->
 		<tstamp />
@@ -188,57 +198,99 @@
 		<!-- Delete the ${err_dir} and ${out_dir} directory trees -->
 		<delete dir="${err_dir}"/>
 		<delete dir="${out_dir}"/>
-		<delete dir="${jsdoc2_dir}"/>
-		<delete dir="${jsdoc3_dir}"/>
-		<delete dir="${yuidoc_dir}"/>
+		<delete dir="${jsdoc_dir}"/>
 	</target>
 
 
 	<!-- Compile for deploy -->
+	<target name="compile" description="Lint and Audit and then Compile.">
+		<antcall target="init"/>
 
+		<antcall target="lint">
+			<param name="lint.sources" value="out.audit.sources"/>
+			<param name="lint.warning" value="lint_warnings.txt"/>
+		</antcall>
+
+		<antcall target="audit">
+			<param name="audit.sources" value="out.audit.sources"/>
+			<param name="audit.externs" value="out.audit.externs"/>
+			<param name="audit.outfile" value="out.audit.js"/>
+			<param name="audit.warning" value="closure_warnings.txt"/>
+		</antcall>
+
+		<antcall target="concat">
+			<param name="concat.sources" value="out.compress.sources"/>
+			<param name="concat.outfile" value="out.js"/>
+		</antcall>
+
+		<antcall target="compress">
+			<param name="compress.sources" value="out.compress.sources"/>
+			<param name="compress.outfile" value="out.mini.js"/>
+		</antcall>
+	</target>
 
 
 	<!-- Compile for Unit Test -->
+	<target name="unit-test" description="Source and jasmine.">
+		<antcall target="init"/>
 
+		<antcall target="lint">
+			<param name="lint.sources" value="utest.audit.sources"/>
+			<param name="lint.warning" value="lint_warnings.txt"/>
+		</antcall>
+
+		<antcall target="audit">
+			<param name="audit.sources" value="utest.audit.sources"/>
+			<param name="audit.externs" value="utest.audit.externs"/>
+			<param name="audit.outfile" value="utest.audit.js"/>
+			<param name="audit.warning" value="closure_warnings.txt"/>
+		</antcall>
+
+		<antcall target="concat">
+			<param name="concat.sources" value="utest.compress.sources"/>
+			<param name="concat.outfile" value="out.js"/>
+		</antcall>
+
+		<antcall target="compress">
+			<param name="compress.sources" value="out.compress.sources"/>
+			<param name="compress.outfile" value="out.mini.js"/>
+		</antcall>
+	</target>
 
 
     <!-- JsDoc commands -->
+
 	<target name="jsdoc2" description="JSDoc: jsdoc-toolkit">
-		<delete dir="${jsdoc2_dir}"/>
-		<mkdir  dir="${jsdoc2_dir}"/>
+		<delete dir="${jsdoc2_dir}/*"/>
 
 		<exec executable="jsdoc" failonerror="true" output="${err_dir}/jsdoc2_error">
-			<arg line="${src_dir} -d=${jsdoc2_dir}" />
+			<arg line="${src_dir} -d=${jsdoc2_dir}"/>
 		</exec>
 	</target>
-
 
 	<target name="jsdoc3" description="JSDoc: jsdoc3">
-		<delete dir="${jsdoc3_dir}"/>
-		<mkdir  dir="${jsdoc3_dir}"/>
+		<delete dir="${jsdoc3_dir}/*"/>
 
 		<exec executable="jsdoc" failonerror="true" output="${err_dir}/jsdoc3_error">
-			<arg line="${src_dir} -d ${jsdoc3_dir}" />
+			<arg line="${src_dir} -d ${jsdoc3_dir}"/>
 		</exec>
 	</target>
 
-
 	<target name="yuidoc" description="JSDoc: yuidoc">
-		<delete dir="${yuidoc_dir}"/>
-		<mkdir  dir="${yuidoc_dir}"/>
+		<delete dir="${yuidoc_dir}/*"/>
 
 		<exec executable="yuidoc" failonerror="true" output="${err_dir}/yuidoc_error">
-			<arg line="${src_dir} -o ${yuidoc_dir}" />
+			<arg line="${src_dir} -o ${yuidoc_dir}"/>
 		</exec>
 	</target>
 
 
 	<!-- List targets -->
 	<target name="usage">
-		<echo message="ant -projecthelp" />
-		<echo message="" />
+		<echo message="ant -projecthelp"/>
+		<echo message=""/>
 		<exec executable="ant">
-			<arg line="-projecthelp" />
+			<arg line="-projecthelp"/>
 		</exec>
 	</target>
 </project>
