@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <project name="ant-template-for-GAS" default="usage" basedir=".">
-	<description>
-	ant template for GAS
-	</description>
+	<description>ant template for GAS</description>
 	<!--
-		build.xml template for Apache Ant to develop Google Apps Script.
+	build.xml template for Apache Ant to develop Google Apps Script.
 	-->
 
 	<!-- directories -->
@@ -85,7 +83,7 @@
 
 
 	<!-- tools definitions -->
-	<property name="closure-compiler.jar-path"	location="/usr/local/closure-compiler/compiler.jar"/>
+	<property name="closure-compiler.jar-path" location="/usr/local/closure-compiler/compiler.jar"/>
 
 	<taskdef name="jscomp"
 			 classname="com.google.javascript.jscomp.ant.CompileTask"
@@ -141,20 +139,18 @@
 			<arg value="--jscomp_warning=invalidCasts"/>
 			<arg value="--jscomp_off=externsValidation"/>
 			<arg value="--process_jquery_primitives"/>
-			<arg value="--js"/>
-			<arg line="${audit.src.files}"/>
 
-			<arg prefix="--externs "/>
-			<arg line="${audit.ext.files}"/>
+			<arg line="${audit.src.files}" prefix="--js "/>
+			<arg line="${audit.ext.files}" prefix="--externs "/>
 		</java>
     </target>
 
 
     <!-- Concat
 		Input:
-			source files: path refid="concat.files"
+			source files: path refid = concat.sources
 		Output:
-			out file:     property="concat.out"
+			outfile: file name = concat.outfile
 	-->
 	<target name="concat">
 		<mkdir  dir="${out_dir}"/>
@@ -193,7 +189,7 @@
 	</target>
 
 
-	<!-- clean up project -->
+	<!-- clean up project directory -->
 	<target name="clean" description="Clean up temp files">
 		<!-- Delete the ${err_dir} and ${out_dir} directory trees -->
 		<delete dir="${err_dir}"/>
