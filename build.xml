@@ -8,6 +8,7 @@
 	<!-- directories -->
 	<property name="spec_dir"		location="${basedir}/spec"/>
 	<property name="src_dir"		location="${basedir}/src"/>
+
 	<property name="lib_dir"		location="${basedir}/lib"/>
 	<property name="ext_dir"		location="${lib_dir}/ext"/>
 
@@ -20,9 +21,8 @@
 	<property name="yuidoc_dir"		location="${jsdoc_dir}/yuidoc"/>
 
 
-	<!-- fileset -->
+	<!-- fileset: source files to be included -->
 	<fileset id="spec" dir="${spec_dir}">
-		<include name="spec.first.js"/>
 		<include name="main.spec.js"/>
 		<include name="sub.spec.js"/>
 	</fileset>
@@ -90,13 +90,11 @@
 			 classpath="${closure-compiler.jar-path}"/>
 
 
-	<!-- Sub targets called by Main targets -->
+	<!-- Sub targets: called by Main targets with some parameters -->
 
 	<!-- lint
-		Input:
-			source files: lint.sources
-		Output:
-			warnings:     lint.warning
+		source files: path refid = lint.sources
+		warning file: filename = lint.warning
 	-->
 	<target name="lint">
 		<mkdir dir="${err_dir}"/>
@@ -113,12 +111,10 @@
 
 
 	<!-- audit
-		Input:
-			source files: property="audit.sources"
-			extern files: property="audit.externs"
-		Output:
-			output file:  property="audit.outfile"
-			warnings:     property="audit.warning"
+		source files: path refid = audit.sources
+		extern files: path refid = audit.externs
+		output file:  fileneme = audit.outfile
+		warning file: filename = audit.warning
 	-->
 	<target name="audit">
 		<mkdir dir="${err_dir}"/>
@@ -147,10 +143,8 @@
 
 
     <!-- Concat
-		Input:
-			source files: path refid = concat.sources
-		Output:
-			outfile: file name = concat.outfile
+		source files: path refid = concat.sources
+		output file:  file name = concat.outfile
 	-->
 	<target name="concat">
 		<mkdir  dir="${out_dir}"/>
@@ -162,10 +156,8 @@
 
 
     <!-- Compress
-		Input:
-			source files: property="compress.sources"
-		Output:
-			out file:     property="compress.outfile"
+		source files: path refid = compress.sources
+		output file:  filename = compress.outfile
 	-->
 	<target name="compress">
 		<mkdir  dir="${out_dir}"/>
@@ -177,21 +169,23 @@
     </target>
 
 
-	<!-- Main targets -->
-
 	<!-- init -->
-	<target name="init" depends="clean" description="Clean and create directories.">
-		<!-- Delete the ${err_dir} directory trees -->
+	<target name="init">
 		<delete dir="${err_dir}/*"/>
 
 		<!-- Create the time stamp -->
-		<tstamp />
+		<tstamp>
+			<format property="DATE" pattern="yyyy/MM/dd"/>
+			<format property="TIME" pattern="HH:mm:ss"/>
+			<format property="NOW"  pattern="yyyy/MM/dd HH:mm:ss"/>
+		</tstamp>
 	</target>
 
 
-	<!-- clean up project directory -->
-	<target name="clean" description="Clean up temp files">
-		<!-- Delete the ${err_dir} and ${out_dir} directory trees -->
+	<!-- Main targets -->
+
+	<!-- clean up project directories -->
+	<target name="clean" description="Clean up project directries.">
 		<delete dir="${err_dir}"/>
 		<delete dir="${out_dir}"/>
 		<delete dir="${jsdoc_dir}"/>
@@ -199,7 +193,7 @@
 
 
 	<!-- Compile for deploy -->
-	<target name="compile" description="Lint and Audit and then Compile.">
+	<target name="compile" description="Lint, Audit and then Compile.">
 		<antcall target="init"/>
 
 		<antcall target="lint">
@@ -227,7 +221,7 @@
 
 
 	<!-- Compile for Unit Test -->
-	<target name="unit-test" description="Source and jasmine.">
+	<target name="unit-test" description="Check and Compile with specfiles for unit testing.">
 		<antcall target="init"/>
 
 		<antcall target="lint">
@@ -256,7 +250,7 @@
 
     <!-- JsDoc commands -->
 
-	<target name="jsdoc2" description="JSDoc: jsdoc-toolkit">
+	<target name="jsdoc2" description="JSDoc: jsdoc-toolkit -- this task is not avarable yet">
 		<delete dir="${jsdoc2_dir}/*"/>
 
 		<exec executable="jsdoc" failonerror="true" output="${err_dir}/jsdoc2_error">
@@ -264,7 +258,7 @@
 		</exec>
 	</target>
 
-	<target name="jsdoc3" description="JSDoc: jsdoc3">
+	<target name="jsdoc3" description="JSDoc: jsdoc3 -- this task is not avarable yet">
 		<delete dir="${jsdoc3_dir}/*"/>
 
 		<exec executable="jsdoc" failonerror="true" output="${err_dir}/jsdoc3_error">
@@ -272,7 +266,7 @@
 		</exec>
 	</target>
 
-	<target name="yuidoc" description="JSDoc: yuidoc">
+	<target name="yuidoc" description="JSDoc: yuidoc -- this task is not avarable yet">
 		<delete dir="${yuidoc_dir}/*"/>
 
 		<exec executable="yuidoc" failonerror="true" output="${err_dir}/yuidoc_error">
