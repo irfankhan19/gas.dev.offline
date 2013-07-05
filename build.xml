@@ -221,7 +221,7 @@
 
 
 	<!-- Compile for Unit Test -->
-	<target name="unit-test" description="Check and Compile with specfiles for unit testing.">
+	<target name="compile-utest" description="Check and Compile with specfiles for unit testing.">
 		<antcall target="init"/>
 
 		<antcall target="lint">
@@ -250,7 +250,7 @@
 
     <!-- JsDoc commands -->
 
-	<target name="jsdoc2" description="JSDoc: jsdoc-toolkit -- this task is not avarable yet">
+	<target name="jsdoc2" description="JSDoc: jsdoc-toolkit -- not avarable yet">
 		<delete dir="${jsdoc2_dir}/*"/>
 
 		<exec executable="jsdoc" failonerror="true" output="${err_dir}/jsdoc2_error">
@@ -258,7 +258,7 @@
 		</exec>
 	</target>
 
-	<target name="jsdoc3" description="JSDoc: jsdoc3 -- this task is not avarable yet">
+	<target name="jsdoc3" description="JSDoc: jsdoc3 -- not avarable yet">
 		<delete dir="${jsdoc3_dir}/*"/>
 
 		<exec executable="jsdoc" failonerror="true" output="${err_dir}/jsdoc3_error">
@@ -266,7 +266,7 @@
 		</exec>
 	</target>
 
-	<target name="yuidoc" description="JSDoc: yuidoc -- this task is not avarable yet">
+	<target name="yuidoc" description="JSDoc: yuidoc -- not avarable yet">
 		<delete dir="${yuidoc_dir}/*"/>
 
 		<exec executable="yuidoc" failonerror="true" output="${err_dir}/yuidoc_error">
