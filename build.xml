@@ -134,6 +134,7 @@
 			<arg value="--jscomp_warning=internetExplorerChecks"/>
 			<arg value="--jscomp_warning=invalidCasts"/>
 			<arg value="--jscomp_off=externsValidation"/>
+
 			<arg value="--process_jquery_primitives"/>
 
 			<arg line="${audit.src.files}" prefix="--js="/>
@@ -142,7 +143,7 @@
     </target>
 
 
-    <!-- Concat
+	<!-- Concat
 		source files: path refid = concat.sources
 		output file:  file name = concat.outfile
 	-->
@@ -155,7 +156,7 @@
 	</target>
 
 
-    <!-- Compress
+	<!-- Compress
 		source files: path refid = compress.sources
 		output file:  filename = compress.outfile
 	-->
