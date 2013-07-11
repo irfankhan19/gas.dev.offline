@@ -165,12 +165,13 @@
 
 			<!-- options:
 				https://code.google.com/p/closure-compiler/wiki/Warnings
+				[ jscomp_off | jscomp_warning | jscomp_error ]
 			-->
 			<arg value="=accessControls" 			prefix="--jscomp_warning"/>
 			<arg value="=checkRegExp"				prefix="--jscomp_warning"/>
 			<arg value="=checkTypes"				prefix="--jscomp_error"/>
 			<arg value="=const"						prefix="--jscomp_warning"/>
-			<arg value="=internetExplorerChecks"	prefix="--jscomp_warning"/>
+			<arg value="=internetExplorerChecks"	prefix="--jscomp_off"/>
 			<arg value="=visibility"				prefix="--jscomp_warning"/>
 
 			<arg line="${audit.src.files}" prefix="--js="/>
