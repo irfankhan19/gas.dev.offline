@@ -1,41 +1,16 @@
-/**
- * sample.js : my first sample project on eclipse.
- *
- */
 
-/**
- * My Application namespace.
- *
- */
-var MyApp = MyApp || {};
+function main() {
 
-/**
- * My Application main
- *
- */
-MyApp.main = (function() {
-  /**
-   * Main function of my application.
-   * @param {Number} num of hogehoge.
-   * @return {String} foo text string.
-   */
+  var name = 'foo',
+      age = 10;
 
-  var C = function(n) {
-    var d = 'hello';
-    MyApp.__name__ = n + d;                 //    'mainだぞ。main';
-    // return MyApp.__name__ + 9;           //    'hello!   main';
-    return {};
-  };
+  var c = new Sub(name, age);
 
-  /**
-   * Rows Header class
-   * @constructor
-   * @return {RowHeaderClass}
-   * @see MyApp.main
-   */
-  C.RowsHeader = function() {
-    return { content: null };
-  };
+  YUI888d = 444;
 
-  return C;
-})();
+  c.walk();
+}
+
+// TODO: なぜ、上記はエラーにならない？
+
+

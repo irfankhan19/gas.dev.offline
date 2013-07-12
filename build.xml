@@ -25,9 +25,11 @@
 
 	<!-- fileset: source files to be included -->
 	<fileset id="spec.1st" dir="${spec_dir}">
+		<include name="rajah.init.js"/>
 	</fileset>
 
 	<fileset id="spec.2nd" dir="${spec_dir}">
+		<include name="sub.spec.js"/>
 	</fileset>
 
 	<fileset id="src" dir="${src_dir}">
@@ -36,9 +38,12 @@
 	</fileset>
 
 	<fileset id="lib" dir="${lib_dir}">
+		<include name="lib.js"/>
 	</fileset>
 
 	<fileset id="ext" dir="${ext_dir}">
+		<include name="rajah.ext.js"/>
+		<include name="jasmine.js"/>
 	</fileset>
 
 
@@ -136,9 +141,6 @@
 		extern files: path refid = audit.externs
 		output file:  fileneme = audit.outfile
 		warning file: filename = audit.warning
-
-		[ return value ]
-		error info: property = autit.result
 	-->
 	<target name="audit">
 		<mkdir dir="${err_dir}"/>
@@ -150,7 +152,7 @@
 		<java jar="${closure-compiler.jar-path}"
 			output="${tmp_dir}/${audit.outfile}"
 			error="${err_dir}/${audit.warning}"
-			errorproperty="audit.result"
+			failonerror="true"
 			fork="true" >
 
 			<!-- compilation_level
@@ -161,7 +163,7 @@
 			<!-- warning_level
 				[ QUIET | DEFAULT | VERBOSE ]
 			-->
-			<arg value="--warning_level=VERBOSE"/>
+			<arg value="--warning_level=DEFAULT"/>
 
 			<!-- options:
 				https://code.google.com/p/closure-compiler/wiki/Warnings
@@ -169,7 +171,7 @@
 			-->
 			<arg value="=accessControls" 			prefix="--jscomp_warning"/>
 			<arg value="=checkRegExp"				prefix="--jscomp_warning"/>
-			<arg value="=checkTypes"				prefix="--jscomp_error"/>
+			<arg value="=checkTypes"				prefix="--jscomp_warning"/>
 			<arg value="=const"						prefix="--jscomp_warning"/>
 			<arg value="=internetExplorerChecks"	prefix="--jscomp_off"/>
 			<arg value="=visibility"				prefix="--jscomp_warning"/>
@@ -202,7 +204,8 @@
 		<mkdir  dir="${out_dir}"/>
 
 		<jscomp compilationLevel="simple" warning="quiet"
-				debug="false" output="${tmp_dir}/${compress.outfile}">
+			debug="false" output="${tmp_dir}/${compress.outfile}">
+
 			<path refid="${compress.sources}"/>
 		</jscomp>
 
@@ -239,7 +242,6 @@
 			<param name="audit.outfile" value="out.audit.js"/>
 			<param name="audit.warning" value="out.closure_warnings.txt"/>
 		</antcall>
-		<!-- fail if="audit.result" message="${audit.result}"/ -->
 
 		<antcall target="concat">
 			<param name="concat.sources" value="out.compress.sources"/>
@@ -268,7 +270,6 @@
 			<param name="audit.outfile" value="utest.audit.js"/>
 			<param name="audit.warning" value="utest.closure_warnings.txt"/>
 		</antcall>
-		<!-- fail if="audit.result" message="${audit.result}"/ -->
 
 		<antcall target="concat">
 			<param name="concat.sources" value="utest.compress.sources"/>
