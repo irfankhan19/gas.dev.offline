@@ -14,8 +14,8 @@ var Sub = function(n, a) {
 
 
 /**
- *
+ * @param {number} n
  */
-Sub.prototype.walk = function() {
-  this.walkCount++;
+Sub.prototype.walk = function(n) {
+  this.walkCount += n;
 };

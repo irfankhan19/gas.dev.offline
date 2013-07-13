@@ -128,7 +128,7 @@
 		<pathconvert property="lint.files" refid="${lint.sources}" pathsep=" "/>
 
 		<exec executable="gjslint" failonerror="true" output="${err_dir}/${lint.warning}">
-			<arg value="--custom_jsdoc_tags=''"/>
+			<arg value="--jslint_error='all'"/>
 			<arg value="--max_line_length=100"/>
 
 			<arg line="${lint.files}"/>
@@ -169,12 +169,32 @@
 				https://code.google.com/p/closure-compiler/wiki/Warnings
 				[ jscomp_off | jscomp_warning | jscomp_error ]
 			-->
-			<arg value="=accessControls" 			prefix="--jscomp_warning"/>
+			<arg value="=accessControls"			prefix="--jscomp_warning"/>
+			<arg value="=ambiguousFunctionDecl"		prefix="--jscomp_warning"/>
+			<arg value="=checkDebuggerStatement"	prefix="--jscomp_warning"/>
 			<arg value="=checkRegExp"				prefix="--jscomp_warning"/>
 			<arg value="=checkTypes"				prefix="--jscomp_warning"/>
+			<arg value="=checkVars"					prefix="--jscomp_warning"/>
 			<arg value="=const"						prefix="--jscomp_warning"/>
+			<arg value="=constantProperty"			prefix="--jscomp_warning"/>
+			<arg value="=deprecated"				prefix="--jscomp_warning"/>
+			<arg value="=duplicate"					prefix="--jscomp_warning"/>
+			<arg value="=es5Strict"					prefix="--jscomp_warning"/>
+			<arg value="=externsValidation"			prefix="--jscomp_warning"/>
+			<arg value="=fileoverviewTags"			prefix="--jscomp_warning"/>
+			<arg value="=globalThis"				prefix="--jscomp_warning"/>
 			<arg value="=internetExplorerChecks"	prefix="--jscomp_off"/>
+			<arg value="=invalidCasts"				prefix="--jscomp_warning"/>
+			<arg value="=missingProperties"			prefix="--jscomp_warning"/>
+			<arg value="=nonStandardJsDocs"			prefix="--jscomp_warning"/>
+			<arg value="=strictModuleDepCheck"		prefix="--jscomp_off"/>
+			<arg value="=suspiciousCode"			prefix="--jscomp_warning"/>
+			<arg value="=undefinedNames"			prefix="--jscomp_warning"/>
+			<arg value="=undefinedVars"				prefix="--jscomp_warning"/>
+			<arg value="=unknownDefines"			prefix="--jscomp_warning"/>
+			<arg value="=uselessCode"				prefix="--jscomp_warning"/>
 			<arg value="=visibility"				prefix="--jscomp_warning"/>
+
 
 			<arg line="${audit.src.files}" prefix="--js="/>
 			<arg line="${audit.ext.files}" prefix="--externs="/>
