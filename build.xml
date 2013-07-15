@@ -129,7 +129,6 @@
 		<pathconvert property="lint.files" refid="${lint.sources}" pathsep=" "/>
 
 		<exec executable="gjslint" failonerror="true" output="${err_dir}/${lint.warning}">
-			<arg value="--jslint_error='all'"/>
 			<arg value="--max_line_length=100"/>
 
 			<arg line="${lint.files}"/>
