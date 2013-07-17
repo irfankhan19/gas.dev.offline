@@ -1,44 +1,37 @@
 
 
-Git:
+
+##ant:
+    version 1.8.2
 
 
-
-Java:
+##Java:
     Oracle JDK 1.7
     from Oracle
 
-ant:
-    version 1.8.2
-    from Ubuntu Software Center
 
-
-Google Closure tools
-
-    Compiler:
+##Google Closure Compiler:
         version  - exported
         Built on - 2013.04.11 11:30
         from goole.com/closure/compiler
         howtoinstall: https://bowerstudios.com/node/895
 
 
-    Linter:
-
-        easy_install:
+##Google Closure Linter:
 
 
-jsdoc-toolkit:
+##jsdoc-toolkit:
     version - 
     from: sudo apt-get install jsdoc-toolkit
 
 
-JSDoc3:
+##JSDoc3:
     version 3.2.0-dev
 
 
     node:
 
 
-YUIDOC:
+##YUIDOC:
 
 
